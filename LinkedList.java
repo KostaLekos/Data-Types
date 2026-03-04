@@ -1,15 +1,15 @@
 public class LinkedList<T> {
     Node<T> head;
-    Node<T> newestNode;
+    Node<T> tail;
 
     public LinkedList(T head) {
         this.head = new Node<>(head);
-        newestNode = this.head;
+        tail = this.head;
     }
 
     public LinkedList() {
         this.head = null;
-        newestNode = null;
+        tail = null;
     }
 
     public Node<T> get(int pos) {
@@ -20,7 +20,7 @@ public class LinkedList<T> {
         } else {
             Node<T> currentNode = head;
             for (int i = 0; i < pos; i++) {
-                currentNode = currentNode.next;
+                currentNode = currentNode.right;
             }
             return currentNode;
         }
@@ -31,11 +31,11 @@ public class LinkedList<T> {
 
         if (head == null) {
             head = placeholder;
-            newestNode = placeholder;
+            tail = placeholder;
         } else {
-            newestNode.next = placeholder;
-            placeholder.prev = newestNode;
-            newestNode = placeholder;
+            tail.right = placeholder;
+            placeholder.left = tail;
+            tail = placeholder;
         }
 
     }
@@ -48,31 +48,41 @@ public class LinkedList<T> {
                 "Position " + pos + " is out of bounds. Size is " + size() + "."
             );
         } else if (pos > 0) {
-            Node<T> prevNode = get(pos - 1);
-            Node<T> nextNode = prevNode.next;
+            Node<T> leftNode = get(pos - 1);
+            Node<T> rightNode = leftNode.right;
 
-            newNode.prev = prevNode;
-            newNode.next = nextNode;
+            newNode.left = leftNode;
+            newNode.right = rightNode;
 
-            prevNode.next = newNode;
+            leftNode.right = newNode;
 
             // for if pos == size()
-            if (nextNode != null) nextNode.prev = newNode;
-            else newestNode = newNode;
+            if (rightNode != null) rightNode.left = newNode;
+            else tail = newNode;
 
         } else { // Changing Head
-            newNode.next = head;
-            head.prev = newNode;
+            newNode.right = head;
+            head.left = newNode;
             head = newNode;
         }
     }
 
     public void addFirst(T value) {
         Node<T> newNode = new Node<>(value);
-        if (head != null) head.prev = newNode;
-        newNode.next = head;
+        if (head != null) head.left = newNode;
+        newNode.right = head;
         head = newNode;
-        if (newestNode == null) newestNode = newNode;
+        if (tail == null) tail = newNode;
+    }
+
+    public void remove(int pos) {
+        Node<T> node = get(pos);
+
+        if (node.right != null) node.right.left = node.left;
+        else tail = node.left;
+
+        if (node.left != null) node.left.right = node.right;
+        else head = node.right;
     }
 
     public void set(int pos, T value) {
@@ -91,7 +101,7 @@ public class LinkedList<T> {
 
         Node<T> currentNode = head;
         while (currentNode != null) {
-            currentNode = currentNode.next;
+            currentNode = currentNode.right;
             size++;
         }
         return size;
