@@ -41,7 +41,7 @@ public class BinaryTree<T extends Comparable<T>> {
         return currNode;
     }
 
-    public void insert(T value) {
+    public void add(T value) {
         if (head == null) {
             head = new Node<>(value);
             return;
@@ -66,6 +66,59 @@ public class BinaryTree<T extends Comparable<T>> {
                 } else {
                     current.right = new Node<T>(value);
                     return;
+                }
+            }
+        }
+    }
+
+    public boolean remove(T value) {
+        Node<T> current = head;
+
+        if (head == null) return false;
+
+        if (head.data.equals(value)) {
+            if (head.left == null) head = head.right;
+            else if (head.right == null) head = head.left;
+            else {
+                // head has two children, more complex
+                return false; // for now, ignored
+            }
+            return true;
+        }
+
+        while (true) {
+            int cmp = value.compareTo(current.data);
+
+            if (cmp < 0) {
+                if (current.left == null) return false;
+
+                if (current.left.data.equals(value)) {
+                    // zero or one child
+                    if (current.left.left == null) current.left = current.left.right;
+                    else if (current.left.right == null) current.left = current.left.left;
+                    else {
+                        // two children, more complex
+                        return false; // for now, ignored
+                    }
+                    return true;
+                } else {
+                    current = current.left;
+                }
+
+            } else { // cmp > 0
+                if (current.right == null) return false;
+
+                if (current.right.data.equals(value)) {
+                    // zero or one child
+                    if (current.right.left == null) current.right = current.right.right;
+                    else if (current.right.right == null) current.right = current.right.left;
+                    else {
+                        // two children, more complex
+                        return false; // for now, ignored
+                    }
+                    return true;
+                } else {
+                    current = current.right;
                 }
             }
         }
