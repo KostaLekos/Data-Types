@@ -37,26 +37,6 @@ public class BinaryTree<T extends Comparable<T>> {
         return false; // not found
     }
 
-    public Node<T> getByPath(String binPath) { // Not recommended
-        Node<T> currNode = head;
-        for (int i = 0; i < binPath.length(); i++) {
-            char c = binPath.charAt(i);
-
-            if (currNode == null) {
-                return currNode;
-            } else if (c == '0') {
-                currNode = currNode.left;
-            } else if (c == '1') {
-                currNode = currNode.right;
-            } else {
-                throw new IllegalArgumentException(
-                    "Path may only contain a binary String. Invalid char: " + c
-                );
-            }
-        }
-        return currNode;
-    }
-
     public void add(T value) {
         if (head == null) {
             head = new Node<>(value);
@@ -93,16 +73,14 @@ public class BinaryTree<T extends Comparable<T>> {
         Node<T> parent = null;
         Node<T> current = head;
 
-        // 1. Find the node to remove
         while (current != null && !current.data.equals(value)) {
             parent = current;
             if (value.compareTo(current.data) < 0) current = current.left;
             else current = current.right;
         }
-
         if (current == null) return false; // value not found
 
-        // 2. Node has two children
+        // if node has two children
         if (current.left != null && current.right != null) {
             // Find in-order successor (smallest in right subtree)
             Node<T> succParent = current;
@@ -120,12 +98,11 @@ public class BinaryTree<T extends Comparable<T>> {
             current = succ;
         }
 
-        // 3. Node has 0 or 1 child
+        // if node has 0 or 1 child
         Node<T> child = (current.left != null) ? current.left : current.right;
 
         if (parent == null) {
-            // Removing the root
-            head = child;
+            head = child; // removing root
         } else if (parent.left == current) {
             parent.left = child;
         } else {
@@ -136,9 +113,25 @@ public class BinaryTree<T extends Comparable<T>> {
     }
 
     public void inOrder(Node<T> node) {
-        if (node == null) return;       // base case: nothing to print
-        inOrder(node.left);             // traverse left subtree
-        System.out.print(node.data + " ");  // visit current node
-        inOrder(node.right);            // traverse right subtree
+        if (node == null) return;
+        inOrder(node.left);                 // left subtree
+        System.out.print(node.data + " ");  // print current
+        inOrder(node.right);                // right subtree
     }
+
+    public void preOrder(Node<T> node) {
+        if (node == null) return;
+        System.out.print(node.data + " ");   // print current
+        preOrder(node.left);                 // left subtree
+        preOrder(node.right);                // right subtree
+    }
+
+    public void postOrder(Node<T> node) {
+        if (node == null) return;
+        postOrder(node.left);                 // left subtree
+        postOrder(node.right);                // right subtree
+        System.out.print(node.data + " ");    // print current
+    }
+
+
 }
